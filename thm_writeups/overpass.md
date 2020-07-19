@@ -76,7 +76,7 @@ The interesting part of the todo.txt file is where it says something about an au
 
 This executes the script located on overpass.thm/downloads/src/buildscript.sh every minute as root, interesting ...
 
-So i ran linpeas on the machine and it show that there is a interesting file that we have the privileges to write.
+So i ran linpeas on the machine and it shows that there is a interesting file that we have the privileges to write.
 
 ![linpeas](/assets/images/overpass/linpeas.png)
 
