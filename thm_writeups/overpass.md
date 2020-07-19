@@ -112,4 +112,4 @@ Now we wait until the script gets executed and we can get a reverse shell as roo
 
 And there we have it, the root flag.
 
-This is my first writeup and i hope it helps you that is reading it, i had a lot of fun doing this room and wanted thanks [James](https://tryhackme.com/p/NinjaJc01) for doing it because his rooms are awesome :DD
+This is my first writeup and i hope it helps you that is reading it, i had a lot of fun doing this room and wanted to thanks [James](https://tryhackme.com/p/NinjaJc01) for doing it because his rooms are awesome :DD
