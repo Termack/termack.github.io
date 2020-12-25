@@ -231,7 +231,7 @@ class Serialize {
 Okay, reading the java code we can see that the service works like this:
 Tt gets your input and sends it as a request to the webserver like this `https://cave.thm/<input>`, then it gets the response and deserializes it (as you noticed the pages have serialized objects), then it gets the command variable of the object and passes it in the command /bin/sh -c "`<command>`" so, if you manipulate the command part of a serialized object you have remote code execution.
 
-Now, we're able to create a serialized object using the code we got from RPG.java, the only thing we need to do is manipulate the response to make the java code deserialize it. We know that the page is vulnerable to XXE and the hint says, sometimes things that work with post can work with get, with XXE we can reflect anything we send, so if we try sending a request to `/action.php?<xml>[serializedobject]</xml>` we get the serialized object back and as we know, the service running on port 3333 sends our input to the webserver, so if we send `action.php?<xml>[serializedobject]</xml>` as input to the service, the response will be [serializedobject] and it will be deserialized, executing any command we want it to
+Now, we're able to create a serialized object using the code we got from RPG.java, the only thing we need to do is manipulate the response to make the java code deserialize it. We know that the page is vulnerable to XXE and the hint says, sometimes things that work with post can work with get, with XXE we can reflect anything we send, so if we try sending a request to `/action.php?<xml>[serializedobject]</xml>` we get the serialized object back and as we know, the service running on port 3333 sends our input to the webserver, so if we send `action.php?<xml>[serializedobject]</xml>` as input to the service, the response will be [serializedobject] and it will be deserialized, executing any command we want it to.
 
 So we need to give an object to execute a command in the machine.
 
@@ -250,7 +250,7 @@ public static void main(String[] args) {
     }
 {% endhighlight %}
 
-Also remove this line import org.apache.commons.io.IOUtils; now compile and run the code to get the serialized object:
+Also remove this line import org.apache.commons.io.IOUtils; now compile and run the code to get the serialized object, be aware that the service running on port 3333 uses jdk 1.8.0_251, so if your java version is different it may not work since serialization changed a bit in other versions:
 
 ```
 $ javac RPG.java
@@ -260,7 +260,7 @@ abc : [base64EncodedObject]
 
 Okay, we have the object, now let's send our payload!
 
-So let's setup a netcat listener and then try sending `action.php?<xml>[serializedobject]</xml>` to the service.
+So let's setup a netcat listener and then try sending `action.php?<xml>[serializedobject]</xml>` to the service, let's not forget to url encode the payload since some charaters in it can become weird in the url, before trying the payload in the service running in port 3333, try sending to the web server to check if the payload gets reflected correctly.
 We get a reverse shell in the machine.
 
 Let's go to our user's home directory, there's a file called info.txt:
